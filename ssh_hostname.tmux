@@ -3,16 +3,19 @@
 
 PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Placeholder → script mapping
-placeholder="#{ssh_hostname}"
+# Script call that outputs the hostname
 script="#($PLUGIN_DIR/scripts/get_hostname.sh)"
 
-# Interpolate status-right
+# Export as tmux option - use #{E:@ssh_hostname} to reference it
+tmux set -gq "@ssh_hostname" "$script"
+
+# Also support #{ssh_hostname} placeholder in status-right/left
+placeholder="#{ssh_hostname}"
+
 status_right=$(tmux show-option -gqv status-right)
 status_right="${status_right//$placeholder/$script}"
 tmux set-option -gq status-right "$status_right"
 
-# Interpolate status-left
 status_left=$(tmux show-option -gqv status-left)
 status_left="${status_left//$placeholder/$script}"
 tmux set-option -gq status-left "$status_left"
