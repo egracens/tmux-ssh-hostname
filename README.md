@@ -1,6 +1,6 @@
 # tmux-ssh-hostname
 
-Display SSH hostname in tmux status bar. Works with [Catppuccin](https://github.com/catppuccin/tmux) theme.
+Display SSH hostname in tmux status bar.
 
 ![screenshot](screenshot.png)
 
@@ -16,13 +16,13 @@ Press `prefix + I` to install.
 
 ## Usage
 
-Add to your status bar:
+Add `#{ssh_hostname}` to your status bar:
 
 ```bash
-set -g status-right "#{?#{m:ssh,#{pane_current_command}},#{E:@catppuccin_status_ssh_host},}"
+set -g status-right "#{ssh_hostname}"
 ```
 
-That's it! The hostname appears only when the current pane is running SSH.
+The plugin replaces `#{ssh_hostname}` with the actual hostname when the current pane is running SSH.
 
 ## License
 

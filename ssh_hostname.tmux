@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 # tmux-ssh-hostname - Display SSH hostname in tmux status bar
-# Works with Catppuccin theme
 
-CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Set plugin path for the module to use
-tmux set -g @ssh_hostname_path "$CURRENT_DIR"
+# Placeholder → script mapping
+placeholder="#{ssh_hostname}"
+script="#($PLUGIN_DIR/scripts/get_hostname.sh)"
 
-# Source the module
-tmux source-file "$CURRENT_DIR/catppuccin_module.conf"
+# Interpolate status-right
+status_right=$(tmux show-option -gqv status-right)
+status_right="${status_right//$placeholder/$script}"
+tmux set-option -gq status-right "$status_right"
+
+# Interpolate status-left
+status_left=$(tmux show-option -gqv status-left)
+status_left="${status_left//$placeholder/$script}"
+tmux set-option -gq status-left "$status_left"

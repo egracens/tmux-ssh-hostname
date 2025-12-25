@@ -3,15 +3,13 @@
 
 pane_pid=$(tmux display-message -p '#{pane_pid}')
 
-# Get SSH command line from /proc
-ssh_cmdline=$(cat /proc/"$pane_pid"/cmdline 2>/dev/null | tr '\0' ' ')
+# Find SSH process (direct or child of shell)
+ssh_pid=$(pgrep -P "$pane_pid" ssh 2>/dev/null | head -1)
+[ -z "$ssh_pid" ] && exit 0
 
-if [ -z "$ssh_cmdline" ] || [[ ! "$ssh_cmdline" =~ ^ssh ]]; then
-    # Try child process (shell → ssh)
-    child_pid=$(pgrep -P "$pane_pid" ssh 2>/dev/null | head -1)
-    [ -n "$child_pid" ] && ssh_cmdline=$(cat /proc/"$child_pid"/cmdline 2>/dev/null | tr '\0' ' ')
-fi
+# Get SSH command line
+ssh_cmdline=$(cat /proc/"$ssh_pid"/cmdline 2>/dev/null | tr '\0' ' ')
+[ -z "$ssh_cmdline" ] && exit 0
 
 # Extract hostname (last arg, strip user@)
-ssh_host=$(echo "$ssh_cmdline" | awk '{print $NF}' | sed 's/.*@//')
-[ -n "$ssh_host" ] && echo "$ssh_host"
+echo "$ssh_cmdline" | awk '{print $NF}' | sed 's/.*@//'
