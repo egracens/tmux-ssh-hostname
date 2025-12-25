@@ -39,12 +39,19 @@ set -gq "@catppuccin_${MODULE_NAME}_text" " #{E:@ssh_hostname}"
 source -F "$HOME/.config/tmux/plugins/tmux/utils/status_module.conf"
 ```
 
-Source it and add to status bar (conditional hides when not in SSH):
+Source the module in your `tmux.conf`:
 
 ```bash
 source -F "$HOME/.config/tmux/modules/ssh_host.conf"
+```
+
+Add to status bar (conditional hides when not in SSH):
+
+```bash
 set -g status-right "#{?#{m:ssh,#{pane_current_command}},#{E:@catppuccin_status_ssh_host},}"
 ```
+
+The `#{?condition,true,false}` syntax shows the module only when pane is running SSH.
 
 ## License
 
