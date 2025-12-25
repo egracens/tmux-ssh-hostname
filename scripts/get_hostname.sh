@@ -1,8 +1,5 @@
 #!/bin/bash
-# Shows remote hostname only when in SSH session
-
-pane_cmd=$(tmux display-message -p '#{pane_current_command}')
-[ "$pane_cmd" != "ssh" ] && exit 0
+# Extracts SSH hostname from current pane
 
 pane_pid=$(tmux display-message -p '#{pane_pid}')
 
